@@ -29,21 +29,37 @@ function createStore(reducer) {
 
 const TodoAction = {
   ADD_TODO: 'ADD_TODO',
-  REMOVE_TODO: 'REMOVE_TODO'
+  REMOVE_TODO: 'REMOVE_TODO',
+  TOGGLE_TODO: 'TOGGLE_TODO'
 };
 
 function todoReducer(state = { todos: [] }, action) {
-  if (action.type === TodoAction.ADD_TODO) {
-    return {
-      todos: state.todos.concat(action.todo)
-    };
-  } else if (action.type === TodoAction.REMOVE_TODO) {
-    return {
-      todos: state.todos.filter(todo => todo !== action.todo)
-    };
-  }
+  switch (action.type) {
+    case TodoAction.ADD_TODO:
+      return {
+        ...state,
+        todos: state.todos.concat(action.todo)
+      };
 
-  return state;
+    case TodoAction.REMOVE_TODO:
+      return {
+        ...state,
+        todos: state.todos.filter(todo => todo.id !== action.todoId)
+      };
+
+    case TodoAction.TOGGLE_TODO:
+      return {
+        ...state,
+        todos: state.todos.map(todo =>
+          todo.id !== action.todoId
+            ? todo
+            : { ...todo, completed: !todo.completed }
+        )
+      };
+
+    default:
+      return state;
+  }
 }
 
 const store = createStore(todoReducer);
