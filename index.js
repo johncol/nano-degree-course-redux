@@ -33,6 +33,12 @@ const TodoAction = {
   TOGGLE_TODO: 'TOGGLE_TODO'
 };
 
+const TodoActionCreator = {
+  addTodo: todo => ({ type: TodoAction.ADD_TODO, todo }),
+  removeTodo: todoId => ({ type: TodoAction.REMOVE_TODO, todoId }),
+  toggleTodo: todoId => ({ type: TodoAction.TOGGLE_TODO, todoId })
+};
+
 const todoReducer = (state = [], action) => {
   switch (action.type) {
     case TodoAction.ADD_TODO:
@@ -55,6 +61,12 @@ const GoalAction = {
   ADD_GOAL: 'ADD_GOAL',
   REMOVE_GOAL: 'REMOVE_GOAL',
   TOGGLE_GOAL: 'TOGGLE_GOAL'
+};
+
+const GoalActionCreator = {
+  addGoal: goal => ({ type: GoalAction.ADD_GOAL, goal }),
+  removeGoal: goalId => ({ type: GoalAction.REMOVE_GOAL, goalId }),
+  toggleGoal: goalId => ({ type: GoalAction.TOGGLE_GOAL, goalId })
 };
 
 const goalReducer = (state = [], action) => {
@@ -85,76 +97,58 @@ const appReducer = (state = {}, action) => {
 const store = createStore(appReducer);
 store.subscribe(() => console.log('state: ', store.getState()));
 
-store.dispatch({
-  type: TodoAction.ADD_TODO,
-  todo: {
+store.dispatch(
+  TodoActionCreator.addTodo({
     id: 1,
     name: 'Check tattoos',
     done: false
-  }
-});
+  })
+);
 
-store.dispatch({
-  type: TodoAction.ADD_TODO,
-  todo: {
+store.dispatch(
+  TodoActionCreator.addTodo({
     id: 2,
     name: 'Complete first nano-degree project',
     done: true
-  }
-});
+  })
+);
 
-store.dispatch({
-  type: TodoAction.ADD_TODO,
-  todo: {
+store.dispatch(
+  TodoActionCreator.addTodo({
     id: 3,
     name: 'Complete first lesson in chaptor 4 of nano-degree',
     done: false
-  }
-});
+  })
+);
 
-store.dispatch({
-  type: TodoAction.TOGGLE_TODO,
-  todoId: 3
-});
+store.dispatch(TodoActionCreator.toggleTodo(3));
 
-store.dispatch({
-  type: TodoAction.REMOVE_TODO,
-  todoId: 2
-});
+store.dispatch(TodoActionCreator.removeTodo(2));
 
-store.dispatch({
-  type: GoalAction.ADD_GOAL,
-  goal: {
+store.dispatch(
+  GoalActionCreator.addGoal({
     id: 1,
     name: 'Finish nano-degree',
     achieved: false
-  }
-});
+  })
+);
 
-store.dispatch({
-  type: GoalAction.ADD_GOAL,
-  goal: {
+store.dispatch(
+  GoalActionCreator.addGoal({
     id: 2,
     name: 'Learn to drive',
     achieved: false
-  }
-});
+  })
+);
 
-store.dispatch({
-  type: GoalAction.ADD_GOAL,
-  goal: {
+store.dispatch(
+  GoalActionCreator.addGoal({
     id: 3,
     name: 'Run half-marathon',
     achieved: true
-  }
-});
+  })
+);
 
-store.dispatch({
-  type: GoalAction.TOGGLE_GOAL,
-  goalId: 2
-});
+store.dispatch(GoalActionCreator.toggleGoal(2));
 
-store.dispatch({
-  type: GoalAction.REMOVE_GOAL,
-  goalId: 2
-});
+store.dispatch(GoalActionCreator.removeGoal(2));
