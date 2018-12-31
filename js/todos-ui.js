@@ -27,20 +27,22 @@ const createTodosUI = ({ onAddTodo, onRemoveTodo, onToggleTodo }) => {
     return button;
   };
 
-  const addTodoToDOM = todo => {
-    const removeButton = removeButtonFor(todo);
-
+  const todoNameElementFor = todo => {
     const todoName = document.createElement('span');
     todoName.classList = todo.done ? 'item-name item-done' : 'item-name';
     todoName.appendChild(document.createTextNode(todo.name));
     todoName.addEventListener('click', () => onToggleTodo(todo));
-
-    const listItem = document.createElement('li');
-    listItem.appendChild(removeButton);
-    listItem.appendChild(todoName);
-
-    listTodos.append(listItem);
+    return todoName;
   };
+
+  const listItemFor = todo => {
+    const listItem = document.createElement('li');
+    listItem.appendChild(removeButtonFor(todo));
+    listItem.appendChild(todoNameElementFor(todo));
+    return listItem;
+  };
+
+  const addTodoToDOM = todo => listTodos.append(listItemFor(todo));
 
   const updateUI = todos => {
     listTodos.innerHTML = '';
