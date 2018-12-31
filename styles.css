@@ -1,0 +1,18 @@
+.list-items {
+  list-style: none;
+}
+
+.item-name {
+  cursor: pointer;
+}
+
+.item-done {
+  text-decoration: line-through;
+  color: #a6a6a6;
+}
+
+.button-remove {
+  padding: 8px;
+  background-color: #b5b3b3;
+  line-height: 1;
+}
