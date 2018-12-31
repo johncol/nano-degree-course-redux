@@ -1,4 +1,9 @@
-const store = createStore(appReducer);
+const store = Redux.createStore(
+  Redux.combineReducers({
+    todos: todoReducer,
+    goals: goalReducer
+  })
+);
 
 const TodosUI = createTodosUI({
   onAddTodo: todoName => {

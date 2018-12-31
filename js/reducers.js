@@ -58,9 +58,10 @@ const goalReducer = (state = [], action) => {
   }
 };
 
-const appReducer = (state = {}, action) => {
-  return {
-    todos: todoReducer(state.todos, action),
-    goals: goalReducer(state.goals, action)
-  };
-};
+// NOT REQUIRED ANYMORE, as this can be done with Redux.combineReducers
+// const appReducer = (state = {}, action) => {
+//   return {
+//     todos: todoReducer(state.todos, action),
+//     goals: goalReducer(state.goals, action)
+//   };
+// };
