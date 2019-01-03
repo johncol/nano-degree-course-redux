@@ -7,8 +7,10 @@
     <title>Nano-degree UI + Redux</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+    <script src="https://unpkg.com/react@16.3.0-alpha.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.0-alpha.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 
-    <!-- <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css" /> -->
     <link
       rel="stylesheet"
       href="https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.3.6.min.css"
@@ -16,21 +18,157 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div>
-      <h1>UI + Redux</h1>
-
-      <section>
-        <h2>TODO List</h2>
-        <input type="text" placeholder="Write your new TODO" id="input-todo" />
-        <button type="button" id="button-add-todo">Add TODO</button>
-        <ul id="list-todos" class="list-items"></ul>
-      </section>
-    </div>
+    <div id="react-app-root"></div>
 
     <script src="js/utils.js"></script>
-    <!-- <script src="js/store.js"></script> -->
     <script src="js/reducers.js"></script>
-    <script src="js/todos-ui.js"></script>
-    <script src="js/application.js"></script>
+    <!-- <script src="js/store.js"></script> -->
+    <!-- <script src="js/todos-ui.js"></script> -->
+    <!-- <script src="js/application.js"></script> -->
+
+    <script type="text/babel">
+      const RemoveItemButton = ({ onRemoveItem: removeItem }) => {
+        return (
+          <button type="button" className="button-remove" onClick={removeItem}>
+            X
+          </button>
+        );
+      };
+
+      const ItemText = props => {
+        const { itemDone, itemText, onToggleItem: toggleItem } = props;
+        return (
+          <span
+            className={'item-name' + (itemDone ? ' item-done' : '')}
+            onClick={toggleItem}
+          >
+            {itemText}
+          </span>
+        );
+      };
+
+      const TodoItem = props => {
+        const {
+          todo,
+          onRemoveItem: removeItem,
+          onToggleItem: toggleItem
+        } = props;
+        return (
+          <li>
+            <RemoveItemButton onRemoveItem={() => removeItem(todo)} />
+            <ItemText
+              itemDone={todo.done}
+              itemText={todo.name}
+              onToggleItem={() => toggleItem(todo)}
+            />
+          </li>
+        );
+      };
+
+      const List = props => {
+        const { children } = props;
+        return <ul className="list-items">{children}</ul>;
+      };
+
+      class AddItemForm extends React.Component {
+        addTodo = event => {
+          event.preventDefault();
+          const item = this.todoNameInput.value.trim();
+          if (item !== '') {
+            this.props.onSubmit(item);
+            this.todoNameInput.value = '';
+          }
+        };
+
+        render() {
+          const { onSubmit, placeholder, buttonLabel } = this.props;
+          return (
+            <form onSubmit={this.addTodo}>
+              <input
+                type="text"
+                placeholder={placeholder}
+                ref={todoNameInput => (this.todoNameInput = todoNameInput)}
+              />
+              <button type="submit">{buttonLabel}</button>
+            </form>
+          );
+        }
+      }
+
+      class TODOs extends React.Component {
+        dispatchAddTodoAction = todoName => {
+          this.props.store.dispatch(
+            TodoActionCreator.addTodo({
+              id: generateId(),
+              name: todoName,
+              done: false
+            })
+          );
+        };
+
+        dispatchRemoveTodoAction = todo => {
+          this.props.store.dispatch(TodoActionCreator.removeTodo(todo.id));
+        };
+
+        dispatchToggleTodoAction = todo => {
+          this.props.store.dispatch(TodoActionCreator.toggleTodo(todo.id));
+        };
+
+        render() {
+          const { todos } = this.props;
+          return (
+            <section>
+              <h2>TODO List</h2>
+
+              <AddItemForm
+                onSubmit={this.dispatchAddTodoAction}
+                placeholder="Write your new TODO"
+                buttonLabel="Add TODO"
+              />
+
+              <List>
+                {todos.map(todo => (
+                  <TodoItem
+                    key={todo.id}
+                    todo={todo}
+                    onRemoveItem={this.dispatchRemoveTodoAction}
+                    onToggleItem={this.dispatchToggleTodoAction}
+                  />
+                ))}
+              </List>
+            </section>
+          );
+        }
+      }
+
+      class App extends React.Component {
+        componentDidMount() {
+          this.props.store.subscribe(() => this.forceUpdate());
+        }
+
+        render() {
+          const { store } = this.props;
+          const { todos } = store.getState();
+          return (
+            <div>
+              <h1>UI + Redux</h1>
+              <TODOs store={store} todos={todos} />
+            </div>
+          );
+        }
+      }
+
+      const rootReducer = Redux.combineReducers({
+        todos: todoReducer,
+        goals: goalReducer
+      });
+      const middlewares = Redux.applyMiddleware(checkForBitcoin, logger);
+      const store = Redux.createStore(rootReducer, middlewares);
+
+      ReactDOM.render(
+        <App store={store} />,
+        document.getElementById('react-app-root')
+      );
+    </script>
   </body>
 </html>
