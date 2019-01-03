@@ -7,7 +7,7 @@ const store = Redux.createStore(
 
 const TodosUI = createTodosUI({
   onAddTodo: todoName => {
-    store.dispatch(
+    checkAndDispatch(
       TodoActionCreator.addTodo({
         id: generateId(),
         name: todoName,
@@ -18,9 +18,9 @@ const TodosUI = createTodosUI({
     TodosUI.focusInput();
   },
 
-  onRemoveTodo: todo => store.dispatch(TodoActionCreator.removeTodo(todo.id)),
+  onRemoveTodo: todo => checkAndDispatch(TodoActionCreator.removeTodo(todo.id)),
 
-  onToggleTodo: todo => store.dispatch(TodoActionCreator.toggleTodo(todo.id))
+  onToggleTodo: todo => checkAndDispatch(TodoActionCreator.toggleTodo(todo.id))
 });
 
 store.subscribe(() => {

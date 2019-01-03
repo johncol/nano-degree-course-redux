@@ -58,6 +58,13 @@ const goalReducer = (state = [], action) => {
   }
 };
 
+const checkAndDispatch = action => {
+  if (action.type === TodoAction.ADD_TODO && action.todo.name.indexOf('bitcoin') !== -1) {
+    return alert("Can't add bitcoin related TODOs");
+  }
+  return store.dispatch(action);
+}
+
 // NOT REQUIRED ANYMORE, as this can be done with Redux.combineReducers
 // const appReducer = (state = {}, action) => {
 //   return {
