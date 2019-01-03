@@ -36,30 +36,32 @@
       };
 
       const ItemText = props => {
-        const { itemDone, itemText, onToggleItem: toggleItem } = props;
+        const { itemDone, itemName, onToggleItem: toggleItem } = props;
         return (
           <span
             className={'item-name' + (itemDone ? ' item-done' : '')}
             onClick={toggleItem}
           >
-            {itemText}
+            {itemName}
           </span>
         );
       };
 
-      const TodoItem = props => {
+      const Item = props => {
         const {
-          todo,
+          item,
+          itemDoneProp,
+          itemNameProp,
           onRemoveItem: removeItem,
           onToggleItem: toggleItem
         } = props;
         return (
           <li>
-            <RemoveItemButton onRemoveItem={() => removeItem(todo)} />
+            <RemoveItemButton onRemoveItem={() => removeItem(item)} />
             <ItemText
-              itemDone={todo.done}
-              itemText={todo.name}
-              onToggleItem={() => toggleItem(todo)}
+              itemDone={item[itemDoneProp || 'done']}
+              itemName={item[itemNameProp || 'name']}
+              onToggleItem={() => toggleItem(item)}
             />
           </li>
         );
@@ -128,9 +130,9 @@
 
               <List>
                 {todos.map(todo => (
-                  <TodoItem
+                  <Item
                     key={todo.id}
-                    todo={todo}
+                    item={todo}
                     onRemoveItem={this.dispatchRemoveTodoAction}
                     onToggleItem={this.dispatchToggleTodoAction}
                   />
