@@ -3,7 +3,7 @@ const rootReducer = Redux.combineReducers({
   goals: goalReducer
 });
 
-const middlewares = Redux.applyMiddleware(checkForBitcoin);
+const middlewares = Redux.applyMiddleware(checkForBitcoin, logger);
 
 const store = Redux.createStore(rootReducer, middlewares);
 

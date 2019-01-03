@@ -68,6 +68,15 @@ const checkForBitcoin = store => next => action => {
   return next(action);
 };
 
+const logger = store => next => action => {
+  console.group(action.type);
+  console.log('Action: ', action);
+  const result = next(action);
+  console.log('New state: ', store.getState());
+  console.groupEnd();
+  return result;
+};
+
 // NOT REQUIRED ANYMORE, as this can be done with Redux.combineReducers
 // const appReducer = (state = {}, action) => {
 //   return {
