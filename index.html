@@ -143,6 +143,53 @@
         }
       }
 
+      class Goals extends React.Component {
+        dispatchAddGoalAction = goalName => {
+          this.props.store.dispatch(
+            GoalActionCreator.addGoal({
+              id: generateId(),
+              name: goalName,
+              achieved: false
+            })
+          );
+        };
+
+        dispatchRemoveGoalAction = goal => {
+          this.props.store.dispatch(GoalActionCreator.removeGoal(goal.id));
+        };
+
+        dispatchToggleGoalAction = goal => {
+          this.props.store.dispatch(GoalActionCreator.toggleGoal(goal.id));
+        };
+
+        render() {
+          const { goals } = this.props;
+          return (
+            <section>
+              <h2>Goal List</h2>
+
+              <AddItemForm
+                onSubmit={this.dispatchAddGoalAction}
+                placeholder="Write a new goal"
+                buttonLabel="Add goal"
+              />
+
+              <List>
+                {goals.map(goal => (
+                  <Item
+                    key={goal.id}
+                    item={goal}
+                    itemDoneProp="achieved"
+                    onRemoveItem={this.dispatchRemoveGoalAction}
+                    onToggleItem={this.dispatchToggleGoalAction}
+                  />
+                ))}
+              </List>
+            </section>
+          );
+        }
+      }
+
       class App extends React.Component {
         componentDidMount() {
           this.props.store.subscribe(() => this.forceUpdate());
@@ -150,11 +197,12 @@
 
         render() {
           const { store } = this.props;
-          const { todos } = store.getState();
+          const { todos, goals } = store.getState();
           return (
             <div>
               <h1>UI + Redux</h1>
               <TODOs store={store} todos={todos} />
+              <Goals store={store} goals={goals} />
             </div>
           );
         }
