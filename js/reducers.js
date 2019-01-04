@@ -22,6 +22,16 @@ const GeneralActionCreator = {
   })
 };
 
+const GeneralApiActionCreator = {
+  receiveInitialData: () => dispatch => {
+    return Promise.all([API.fetchTodos(), API.fetchGoals()]).then(
+      ([todos, goals]) => {
+        dispatch(GeneralActionCreator.receiveInitialData(todos, goals));
+      }
+    );
+  }
+};
+
 const TodoActionCreator = {
   addTodo: todo => ({ type: TodoAction.ADD_TODO, todo }),
   removeTodo: todoId => ({ type: TodoAction.REMOVE_TODO, todoId }),
