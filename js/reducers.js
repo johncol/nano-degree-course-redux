@@ -111,12 +111,13 @@ const logger = store => next => action => {
   return result;
 };
 
-const asyncActions = store => next => action => {
-  if (typeof action === 'function') {
-    return action(store.dispatch);
-  }
-  return next(action);
-};
+// NOT REQUIRED ANYMORE, as this can be done with ReduxThunk
+// const asyncActions = store => next => action => {
+//   if (typeof action === 'function') {
+//     return action(store.dispatch);
+//   }
+//   return next(action);
+// };
 
 // NOT REQUIRED ANYMORE, as this can be done with Redux.combineReducers
 // const appReducer = (state = {}, action) => {
