@@ -25,7 +25,14 @@ const GeneralActionCreator = {
 const TodoActionCreator = {
   addTodo: todo => ({ type: TodoAction.ADD_TODO, todo }),
   removeTodo: todoId => ({ type: TodoAction.REMOVE_TODO, todoId }),
-  toggleTodo: todoId => ({ type: TodoAction.TOGGLE_TODO, todoId })
+  toggleTodo: todoId => ({ type: TodoAction.TOGGLE_TODO, todoId }),
+  removeTodoAsync: todo => dispatch => {
+    dispatch(TodoActionCreator.removeTodo(todo.id));
+    return API.deleteTodo(todo.id).catch(() => {
+      alertError();
+      dispatch(TodoActionCreator.addTodo(todo));
+    });
+  }
 };
 
 const GoalActionCreator = {
@@ -102,6 +109,13 @@ const logger = store => next => action => {
   console.log('New state: ', store.getState());
   console.groupEnd();
   return result;
+};
+
+const asyncActions = store => next => action => {
+  if (typeof action === 'function') {
+    return action(store.dispatch);
+  }
+  return next(action);
 };
 
 // NOT REQUIRED ANYMORE, as this can be done with Redux.combineReducers

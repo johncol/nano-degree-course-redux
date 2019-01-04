@@ -125,12 +125,7 @@
         };
 
         dispatchRemoveTodoAction = todo => {
-          const { store } = this.props;
-          store.dispatch(TodoActionCreator.removeTodo(todo.id));
-          return API.deleteTodo(todo.id).catch(() => {
-            alertError();
-            store.dispatch(TodoActionCreator.addTodo(todo));
-          });
+          this.props.store.dispatch(TodoActionCreator.removeTodoAsync(todo));
         };
 
         dispatchToggleTodoAction = todo => {
@@ -262,7 +257,13 @@
         goals: goalReducer,
         loading: loadingReducer
       });
-      const middlewares = Redux.applyMiddleware(checkForBitcoin, logger);
+
+      const middlewares = Redux.applyMiddleware(
+        asyncActions,
+        checkForBitcoin,
+        logger
+      );
+
       const store = Redux.createStore(rootReducer, middlewares);
 
       ReactDOM.render(
