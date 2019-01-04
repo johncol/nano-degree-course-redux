@@ -181,3 +181,19 @@ const logger = store => next => action => {
 //     goals: goalReducer(state.goals, action)
 //   };
 // };
+
+const createStore = () => {
+  const rootReducer = Redux.combineReducers({
+    todos: todoReducer,
+    goals: goalReducer,
+    loading: loadingReducer
+  });
+
+  const middlewares = Redux.applyMiddleware(
+    ReduxThunk.default,
+    checkForBitcoin,
+    logger
+  );
+
+  return Redux.createStore(rootReducer, middlewares);
+};
