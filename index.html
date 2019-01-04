@@ -115,15 +115,15 @@
 
       class TODOs extends React.Component {
         dispatchAddTodoAction = todoName => {
-          this.props.store.dispatch(TodoApiActionCreator.addTodo(todoName));
+          this.props.dispatch(TodoApiActionCreator.addTodo(todoName));
         };
 
         dispatchRemoveTodoAction = todo => {
-          this.props.store.dispatch(TodoApiActionCreator.removeTodo(todo));
+          this.props.dispatch(TodoApiActionCreator.removeTodo(todo));
         };
 
         dispatchToggleTodoAction = todo => {
-          this.props.store.dispatch(TodoApiActionCreator.toggleTodo(todo.id));
+          this.props.dispatch(TodoApiActionCreator.toggleTodo(todo.id));
         };
 
         render() {
@@ -155,15 +155,15 @@
 
       class Goals extends React.Component {
         dispatchAddGoalAction = goalName => {
-          this.props.store.dispatch(GoalApiActionCreator.addGoal(goalName));
+          this.props.dispatch(GoalApiActionCreator.addGoal(goalName));
         };
 
         dispatchRemoveGoalAction = goal => {
-          this.props.store.dispatch(GoalApiActionCreator.removeGoal(goal));
+          this.props.dispatch(GoalApiActionCreator.removeGoal(goal));
         };
 
         dispatchToggleGoalAction = goal => {
-          this.props.store.dispatch(GoalApiActionCreator.toggleGoal(goal.id));
+          this.props.dispatch(GoalApiActionCreator.toggleGoal(goal.id));
         };
 
         render() {
@@ -202,17 +202,15 @@
         }
 
         render() {
-          const { store } = this.props;
-          const { todos, goals, loading } = store.getState();
-
+          const { loading } = this.props.store.getState();
           return (
             <div>
               <h1>UI + Redux</h1>
               {loading && <Loading />}
               {!loading && (
                 <React.Fragment>
-                  <TODOs store={store} todos={todos} />
-                  <Goals store={store} goals={goals} />
+                  <ConnectedTODOs />
+                  <ConnectedGoals />
                 </React.Fragment>
               )}
             </div>
@@ -237,6 +235,36 @@
           return (
             <Context.Consumer>
               {store => <App store={store} />}
+            </Context.Consumer>
+          );
+        }
+      }
+
+      class ConnectedGoals extends React.Component {
+        render() {
+          return (
+            <Context.Consumer>
+              {store => (
+                <Goals
+                  goals={store.getState().goals}
+                  dispatch={store.dispatch}
+                />
+              )}
+            </Context.Consumer>
+          );
+        }
+      }
+
+      class ConnectedTODOs extends React.Component {
+        render() {
+          return (
+            <Context.Consumer>
+              {store => (
+                <TODOs
+                  todos={store.getState().todos}
+                  dispatch={store.dispatch}
+                />
+              )}
             </Context.Consumer>
           );
         }
