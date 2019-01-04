@@ -28,6 +28,23 @@
     <!-- <script src="js/application.js"></script> -->
 
     <script type="text/babel">
+      const Loading = () => (
+        <div className="lds-default">
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+          <div />
+        </div>
+      );
+
       const RemoveItemButton = ({ onRemoveItem: removeItem }) => {
         return (
           <button type="button" className="button-remove" onClick={removeItem}>
@@ -100,21 +117,29 @@
 
       class TODOs extends React.Component {
         dispatchAddTodoAction = todoName => {
-          this.props.store.dispatch(
-            TodoActionCreator.addTodo({
-              id: generateId(),
-              name: todoName,
-              done: false
+          return API.saveTodo(todoName)
+            .then(todo => {
+              this.props.store.dispatch(TodoActionCreator.addTodo(todo));
             })
-          );
+            .catch(alertError);
         };
 
         dispatchRemoveTodoAction = todo => {
-          this.props.store.dispatch(TodoActionCreator.removeTodo(todo.id));
+          const { store } = this.props;
+          store.dispatch(TodoActionCreator.removeTodo(todo.id));
+          return API.deleteTodo(todo.id).catch(() => {
+            alertError();
+            store.dispatch(TodoActionCreator.addTodo(todo));
+          });
         };
 
         dispatchToggleTodoAction = todo => {
-          this.props.store.dispatch(TodoActionCreator.toggleTodo(todo.id));
+          const { store } = this.props;
+          store.dispatch(TodoActionCreator.toggleTodo(todo.id));
+          return API.saveTodoToggle(todo.id).catch(() => {
+            alertError();
+            store.dispatch(TodoActionCreator.toggleTodo(todo.id));
+          });
         };
 
         render() {
@@ -146,21 +171,29 @@
 
       class Goals extends React.Component {
         dispatchAddGoalAction = goalName => {
-          this.props.store.dispatch(
-            GoalActionCreator.addGoal({
-              id: generateId(),
-              name: goalName,
-              achieved: false
+          return API.saveGoal(goalName)
+            .then(goal => {
+              this.props.store.dispatch(GoalActionCreator.addGoal(goal));
             })
-          );
+            .catch(alertError);
         };
 
         dispatchRemoveGoalAction = goal => {
-          this.props.store.dispatch(GoalActionCreator.removeGoal(goal.id));
+          const { store } = this.props;
+          store.dispatch(GoalActionCreator.removeGoal(goal.id));
+          return API.deleteGoal(goal.id).catch(() => {
+            alertError();
+            store.dispatch(GoalActionCreator.addGoal(goal));
+          });
         };
 
         dispatchToggleGoalAction = goal => {
-          this.props.store.dispatch(GoalActionCreator.toggleGoal(goal.id));
+          const { store } = this.props;
+          store.dispatch(GoalActionCreator.toggleGoal(goal.id));
+          return API.saveGoalToggle(goal.id).catch(() => {
+            alertError();
+            store.dispatch(GoalActionCreator.toggleGoal(goal.id));
+          });
         };
 
         render() {
@@ -190,23 +223,6 @@
           );
         }
       }
-
-      const Loading = () => (
-        <div className="lds-default">
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-          <div />
-        </div>
-      );
 
       class App extends React.Component {
         componentDidMount() {
