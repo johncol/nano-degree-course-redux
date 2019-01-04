@@ -1,13 +1,46 @@
+const GeneralAction = {
+  RECEIVE_INITIAL_DATA: 'RECEIVE_INITIAL_DATA'
+};
+
 const TodoAction = {
   ADD_TODO: 'ADD_TODO',
   REMOVE_TODO: 'REMOVE_TODO',
   TOGGLE_TODO: 'TOGGLE_TODO'
 };
 
+const GoalAction = {
+  ADD_GOAL: 'ADD_GOAL',
+  REMOVE_GOAL: 'REMOVE_GOAL',
+  TOGGLE_GOAL: 'TOGGLE_GOAL'
+};
+
+const GeneralActionCreator = {
+  receiveInitialData: (todos, goals) => ({
+    type: GeneralAction.RECEIVE_INITIAL_DATA,
+    todos,
+    goals
+  })
+};
+
 const TodoActionCreator = {
   addTodo: todo => ({ type: TodoAction.ADD_TODO, todo }),
   removeTodo: todoId => ({ type: TodoAction.REMOVE_TODO, todoId }),
   toggleTodo: todoId => ({ type: TodoAction.TOGGLE_TODO, todoId })
+};
+
+const GoalActionCreator = {
+  addGoal: goal => ({ type: GoalAction.ADD_GOAL, goal }),
+  removeGoal: goalId => ({ type: GoalAction.REMOVE_GOAL, goalId }),
+  toggleGoal: goalId => ({ type: GoalAction.TOGGLE_GOAL, goalId })
+};
+
+const loadingReducer = (state = true, action) => {
+  switch (action.type) {
+    case GeneralAction.RECEIVE_INITIAL_DATA:
+      return false;
+    default:
+      return state;
+  }
 };
 
 const todoReducer = (state = [], action) => {
@@ -23,21 +56,12 @@ const todoReducer = (state = [], action) => {
         todo.id !== action.todoId ? todo : { ...todo, done: !todo.done }
       );
 
+    case GeneralAction.RECEIVE_INITIAL_DATA:
+      return action.todos;
+
     default:
       return state;
   }
-};
-
-const GoalAction = {
-  ADD_GOAL: 'ADD_GOAL',
-  REMOVE_GOAL: 'REMOVE_GOAL',
-  TOGGLE_GOAL: 'TOGGLE_GOAL'
-};
-
-const GoalActionCreator = {
-  addGoal: goal => ({ type: GoalAction.ADD_GOAL, goal }),
-  removeGoal: goalId => ({ type: GoalAction.REMOVE_GOAL, goalId }),
-  toggleGoal: goalId => ({ type: GoalAction.TOGGLE_GOAL, goalId })
 };
 
 const goalReducer = (state = [], action) => {
@@ -52,6 +76,9 @@ const goalReducer = (state = [], action) => {
       return state.map(goal =>
         goal.id !== action.goalId ? goal : { ...goal, achieved: !goal.achieved }
       );
+
+    case GeneralAction.RECEIVE_INITIAL_DATA:
+      return action.goals;
 
     default:
       return state;
