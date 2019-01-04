@@ -167,20 +167,21 @@ const logger = store => next => action => {
 };
 
 // NOT REQUIRED ANYMORE, as this can be done with ReduxThunk
-// const asyncActions = store => next => action => {
-//   if (typeof action === 'function') {
-//     return action(store.dispatch);
-//   }
-//   return next(action);
-// };
+const asyncActions = store => next => action => {
+  if (typeof action === 'function') {
+    return action(store.dispatch);
+  }
+  return next(action);
+};
 
 // NOT REQUIRED ANYMORE, as this can be done with Redux.combineReducers
-// const appReducer = (state = {}, action) => {
-//   return {
-//     todos: todoReducer(state.todos, action),
-//     goals: goalReducer(state.goals, action)
-//   };
-// };
+const appReducer = (state = {}, action) => {
+  return {
+    todos: todoReducer(state.todos, action),
+    goals: goalReducer(state.goals, action),
+    loading: loadingReducer(state.loading, action)
+  };
+};
 
 const createStore = () => {
   const rootReducer = Redux.combineReducers({
