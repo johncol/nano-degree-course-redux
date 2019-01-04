@@ -114,90 +114,86 @@
         }
       }
 
-      class TODOs extends React.Component {
-        dispatchAddTodoAction = todoName => {
-          this.props.dispatch(TodoApiActionCreator.addTodo(todoName));
-        };
+      const TODOs = props => {
+        const { todos } = props;
+        const { addTodo, removeTodo, toggleTodo } = props;
+        return (
+          <section>
+            <h2>TODO List</h2>
 
-        dispatchRemoveTodoAction = todo => {
-          this.props.dispatch(TodoApiActionCreator.removeTodo(todo));
-        };
+            <AddItemForm
+              onSubmit={addTodo}
+              placeholder="Write your new TODO"
+              buttonLabel="Add TODO"
+            />
 
-        dispatchToggleTodoAction = todo => {
-          this.props.dispatch(TodoApiActionCreator.toggleTodo(todo.id));
-        };
+            <List>
+              {todos.map(todo => (
+                <Item
+                  key={todo.id}
+                  item={todo}
+                  onRemoveItem={removeTodo}
+                  onToggleItem={toggleTodo}
+                />
+              ))}
+            </List>
+          </section>
+        );
+      };
 
-        render() {
-          const { todos } = this.props;
-          return (
-            <section>
-              <h2>TODO List</h2>
+      const ConnectedTODOs = ReactRedux.connect(
+        state => ({
+          todos: state.todos
+        }),
+        dispatch => ({
+          addTodo: todoName => dispatch(TodoApiActionCreator.addTodo(todoName)),
+          removeTodo: todo => dispatch(TodoApiActionCreator.removeTodo(todo)),
+          toggleTodo: todo => dispatch(TodoApiActionCreator.toggleTodo(todo.id))
+        })
+      )(TODOs);
 
-              <AddItemForm
-                onSubmit={this.dispatchAddTodoAction}
-                placeholder="Write your new TODO"
-                buttonLabel="Add TODO"
-              />
+      const Goals = props => {
+        const { goals } = props;
+        const { addGoal, removeGoal, toggleGoal } = props;
+        return (
+          <section>
+            <h2>Goal List</h2>
 
-              <List>
-                {todos.map(todo => (
-                  <Item
-                    key={todo.id}
-                    item={todo}
-                    onRemoveItem={this.dispatchRemoveTodoAction}
-                    onToggleItem={this.dispatchToggleTodoAction}
-                  />
-                ))}
-              </List>
-            </section>
-          );
-        }
-      }
+            <AddItemForm
+              onSubmit={addGoal}
+              placeholder="Write a new goal"
+              buttonLabel="Add goal"
+            />
 
-      class Goals extends React.Component {
-        dispatchAddGoalAction = goalName => {
-          this.props.dispatch(GoalApiActionCreator.addGoal(goalName));
-        };
+            <List>
+              {goals.map(goal => (
+                <Item
+                  key={goal.id}
+                  item={goal}
+                  itemDoneProp="achieved"
+                  onRemoveItem={removeGoal}
+                  onToggleItem={toggleGoal}
+                />
+              ))}
+            </List>
+          </section>
+        );
+      };
 
-        dispatchRemoveGoalAction = goal => {
-          this.props.dispatch(GoalApiActionCreator.removeGoal(goal));
-        };
-
-        dispatchToggleGoalAction = goal => {
-          this.props.dispatch(GoalApiActionCreator.toggleGoal(goal.id));
-        };
-
-        render() {
-          const { goals } = this.props;
-          return (
-            <section>
-              <h2>Goal List</h2>
-
-              <AddItemForm
-                onSubmit={this.dispatchAddGoalAction}
-                placeholder="Write a new goal"
-                buttonLabel="Add goal"
-              />
-
-              <List>
-                {goals.map(goal => (
-                  <Item
-                    key={goal.id}
-                    item={goal}
-                    itemDoneProp="achieved"
-                    onRemoveItem={this.dispatchRemoveGoalAction}
-                    onToggleItem={this.dispatchToggleGoalAction}
-                  />
-                ))}
-              </List>
-            </section>
-          );
-        }
-      }
+      const ConnectedGoals = ReactRedux.connect(
+        state => ({
+          goals: state.goals
+        }),
+        dispatch => ({
+          addGoal: goalName => dispatch(GoalApiActionCreator.addGoal(goalName)),
+          removeGoal: goal => dispatch(GoalApiActionCreator.removeGoal(goal)),
+          toggleGoal: goal => dispatch(GoalApiActionCreator.toggleGoal(goal.id))
+        })
+      )(Goals);
 
       class App extends React.Component {
         componentDidMount() {
-          this.props.dispatch(GeneralApiActionCreator.receiveInitialData());
+          this.props.receiveInitialData();
         }
 
         render() {
@@ -217,6 +213,20 @@
         }
       }
 
+      const ConnectedApp = ReactRedux.connect(
+        state => ({
+          loading: state.loading
+        }),
+        dispatch => ({
+          receiveInitialData: () => {
+            dispatch(GeneralApiActionCreator.receiveInitialData());
+          }
+        })
+      )(App);
+
+      /**
+       * NOT REQUIRED ANYMORE, as this is exported by the ReactRedux package
+       **/
       const Context = React.createContext();
 
       /**
@@ -269,18 +279,6 @@
           );
         }
       }
-
-      const ConnectedApp = ReactRedux.connect(state => ({
-        loading: state.loading
-      }))(App);
-
-      const ConnectedGoals = ReactRedux.connect(state => ({
-        goals: state.goals
-      }))(Goals);
-
-      const ConnectedTODOs = ReactRedux.connect(state => ({
-        todos: state.todos
-      }))(TODOs);
 
       const store = createStore();
 
