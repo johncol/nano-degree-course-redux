@@ -64,7 +64,7 @@
         const todo = {
           id: generateId(),
           name: name,
-          complete: false
+          done: false
         };
         todos = todos.concat([todo]);
         fail() ? rej(todo) : res(todo);
@@ -77,7 +77,8 @@
       setTimeout(() => {
         const goal = {
           id: generateId(),
-          name: name
+          name: name,
+          achieved: false
         };
         goals = goals.concat([goal]);
         fail() ? rej(goal) : res(goal);
@@ -110,10 +111,25 @@
           todo.id !== id
             ? todo
             : Object.assign({}, todo, {
-                complete: !todo.complete
+                done: !todo.done
               })
         );
         fail() ? rej() : res(todos);
+      }, 300);
+    });
+  };
+
+  API.saveGoalToggle = function(id) {
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        goals = goals.map(goal =>
+          goal.id !== id
+            ? goal
+            : Object.assign({}, goal, {
+                achieved: !goal.achieved
+              })
+        );
+        fail() ? rej() : res(goals);
       }, 300);
     });
   };
