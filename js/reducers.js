@@ -25,12 +25,31 @@ const GeneralActionCreator = {
 const TodoActionCreator = {
   addTodo: todo => ({ type: TodoAction.ADD_TODO, todo }),
   removeTodo: todoId => ({ type: TodoAction.REMOVE_TODO, todoId }),
-  toggleTodo: todoId => ({ type: TodoAction.TOGGLE_TODO, todoId }),
-  removeTodoAsync: todo => dispatch => {
+  toggleTodo: todoId => ({ type: TodoAction.TOGGLE_TODO, todoId })
+};
+
+const TodoApiActionCreator = {
+  addTodo: todoName => dispatch => {
+    return API.saveTodo(todoName)
+      .then(todo => {
+        dispatch(TodoActionCreator.addTodo(todo));
+      })
+      .catch(alertError);
+  },
+
+  removeTodo: todo => dispatch => {
     dispatch(TodoActionCreator.removeTodo(todo.id));
     return API.deleteTodo(todo.id).catch(() => {
       alertError();
       dispatch(TodoActionCreator.addTodo(todo));
+    });
+  },
+
+  toggleTodo: todoId => dispatch => {
+    dispatch(TodoActionCreator.toggleTodo(todoId));
+    return API.saveTodoToggle(todoId).catch(() => {
+      alertError();
+      dispatch(TodoActionCreator.toggleTodo(todoId));
     });
   }
 };
@@ -39,6 +58,32 @@ const GoalActionCreator = {
   addGoal: goal => ({ type: GoalAction.ADD_GOAL, goal }),
   removeGoal: goalId => ({ type: GoalAction.REMOVE_GOAL, goalId }),
   toggleGoal: goalId => ({ type: GoalAction.TOGGLE_GOAL, goalId })
+};
+
+const GoalApiActionCreator = {
+  addGoal: goalName => dispatch => {
+    return API.saveGoal(goalName)
+      .then(goal => {
+        dispatch(GoalActionCreator.addGoal(goal));
+      })
+      .catch(alertError);
+  },
+
+  removeGoal: goal => dispatch => {
+    dispatch(GoalActionCreator.removeGoal(goal.id));
+    return API.deleteGoal(goal.id).catch(() => {
+      alertError();
+      dispatch(GoalActionCreator.addGoal(goal));
+    });
+  },
+
+  toggleGoal: goalId => dispatch => {
+    dispatch(GoalActionCreator.toggleGoal(goalId));
+    return API.saveGoalToggle(goalId).catch(() => {
+      alertError();
+      dispatch(GoalActionCreator.toggleGoal(goalId));
+    });
+  }
 };
 
 const loadingReducer = (state = true, action) => {

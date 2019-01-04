@@ -118,24 +118,15 @@
 
       class TODOs extends React.Component {
         dispatchAddTodoAction = todoName => {
-          return API.saveTodo(todoName)
-            .then(todo => {
-              this.props.store.dispatch(TodoActionCreator.addTodo(todo));
-            })
-            .catch(alertError);
+          this.props.store.dispatch(TodoApiActionCreator.addTodo(todoName));
         };
 
         dispatchRemoveTodoAction = todo => {
-          this.props.store.dispatch(TodoActionCreator.removeTodoAsync(todo));
+          this.props.store.dispatch(TodoApiActionCreator.removeTodo(todo));
         };
 
         dispatchToggleTodoAction = todo => {
-          const { store } = this.props;
-          store.dispatch(TodoActionCreator.toggleTodo(todo.id));
-          return API.saveTodoToggle(todo.id).catch(() => {
-            alertError();
-            store.dispatch(TodoActionCreator.toggleTodo(todo.id));
-          });
+          this.props.store.dispatch(TodoApiActionCreator.toggleTodo(todo.id));
         };
 
         render() {
@@ -167,29 +158,15 @@
 
       class Goals extends React.Component {
         dispatchAddGoalAction = goalName => {
-          return API.saveGoal(goalName)
-            .then(goal => {
-              this.props.store.dispatch(GoalActionCreator.addGoal(goal));
-            })
-            .catch(alertError);
+          this.props.store.dispatch(GoalApiActionCreator.addGoal(goalName));
         };
 
         dispatchRemoveGoalAction = goal => {
-          const { store } = this.props;
-          store.dispatch(GoalActionCreator.removeGoal(goal.id));
-          return API.deleteGoal(goal.id).catch(() => {
-            alertError();
-            store.dispatch(GoalActionCreator.addGoal(goal));
-          });
+          this.props.store.dispatch(GoalApiActionCreator.removeGoal(goal));
         };
 
         dispatchToggleGoalAction = goal => {
-          const { store } = this.props;
-          store.dispatch(GoalActionCreator.toggleGoal(goal.id));
-          return API.saveGoalToggle(goal.id).catch(() => {
-            alertError();
-            store.dispatch(GoalActionCreator.toggleGoal(goal.id));
-          });
+          this.props.store.dispatch(GoalApiActionCreator.toggleGoal(goal.id));
         };
 
         render() {
