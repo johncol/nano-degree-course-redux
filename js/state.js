@@ -1,4 +1,4 @@
-const GeneralAction = {
+const SharedAction = {
   RECEIVE_INITIAL_DATA: 'RECEIVE_INITIAL_DATA'
 };
 
@@ -14,19 +14,19 @@ const GoalAction = {
   TOGGLE_GOAL: 'TOGGLE_GOAL'
 };
 
-const GeneralActionCreator = {
+const SharedActionCreator = {
   receiveInitialData: (todos, goals) => ({
-    type: GeneralAction.RECEIVE_INITIAL_DATA,
+    type: SharedAction.RECEIVE_INITIAL_DATA,
     todos,
     goals
   })
 };
 
-const GeneralApiActionCreator = {
+const SharedApiActionCreator = {
   receiveInitialData: () => dispatch => {
     return Promise.all([API.fetchTodos(), API.fetchGoals()]).then(
       ([todos, goals]) => {
-        dispatch(GeneralActionCreator.receiveInitialData(todos, goals));
+        dispatch(SharedActionCreator.receiveInitialData(todos, goals));
       }
     );
   }
@@ -98,7 +98,7 @@ const GoalApiActionCreator = {
 
 const loadingReducer = (state = true, action) => {
   switch (action.type) {
-    case GeneralAction.RECEIVE_INITIAL_DATA:
+    case SharedAction.RECEIVE_INITIAL_DATA:
       return false;
     default:
       return state;
@@ -118,7 +118,7 @@ const todoReducer = (state = [], action) => {
         todo.id !== action.todoId ? todo : { ...todo, done: !todo.done }
       );
 
-    case GeneralAction.RECEIVE_INITIAL_DATA:
+    case SharedAction.RECEIVE_INITIAL_DATA:
       return action.todos;
 
     default:
@@ -139,7 +139,7 @@ const goalReducer = (state = [], action) => {
         goal.id !== action.goalId ? goal : { ...goal, achieved: !goal.achieved }
       );
 
-    case GeneralAction.RECEIVE_INITIAL_DATA:
+    case SharedAction.RECEIVE_INITIAL_DATA:
       return action.goals;
 
     default:
