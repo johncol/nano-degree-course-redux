@@ -11,3 +11,5 @@ The app has been updated several times to:
 - Use ReactRedux to connect React components with the Redux store
 
 Finally, we used the npm package called create-react-app to scaffold a new application, and the hole project structure was rearraged while maintaining the same behavior.
+
+## Check it working at [github pages](https://johncol.github.io/nano-degree-redux/)
